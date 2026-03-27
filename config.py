@@ -10,7 +10,7 @@ class Config:
     
     # ============ OPENAI (ChatGPT) - FROM ENVIRONMENT ============
     OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
-    OPENAI_MODEL = "gpt-4-turbo-preview"
+    OPENAI_MODEL = "gpt-4o-mini"  # Free model - works without payment
     OPENAI_MAX_TOKENS = 500
     OPENAI_TEMPERATURE = 0.85
     
