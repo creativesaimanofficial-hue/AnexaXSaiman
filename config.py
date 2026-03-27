@@ -1,23 +1,25 @@
 """
 ANEXA GF4 - Configuration
-All Real API Keys - For Saiman
+All API Keys from Environment Variables
 """
+
+import os
 
 class Config:
     """Master configuration for Anexa AI Girlfriend"""
     
-    # ============ OPENAI (ChatGPT) ============
-    OPENAI_API_KEY = "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"
+    # ============ OPENAI (ChatGPT) - FROM ENVIRONMENT ============
+    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
     OPENAI_MODEL = "gpt-4-turbo-preview"
     OPENAI_MAX_TOKENS = 500
     OPENAI_TEMPERATURE = 0.85
     
-    # ============ GOOGLE SEARCH ============
-    GOOGLE_SEARCH_API_KEY = "AIzaSyApX57sXbSGTsoYotsI7RKZEF4k6hWfpQo"
-    GOOGLE_SEARCH_ENGINE_ID = "018f2f2a8e8e545c5"
+    # ============ GOOGLE SEARCH - FROM ENVIRONMENT ============
+    GOOGLE_SEARCH_API_KEY = os.environ.get('GOOGLE_SEARCH_API_KEY', '')
+    GOOGLE_SEARCH_ENGINE_ID = os.environ.get('GOOGLE_SEARCH_ENGINE_ID', '')
     
-    # ============ ELEVENLABS VOICE ============
-    ELEVENLABS_API_KEY = "sk_1ef0135656741c5ca208af34abb2cffc6dafa035097617a2"
+    # ============ ELEVENLABS VOICE - FROM ENVIRONMENT ============
+    ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY', '')
     ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"  # Rachel voice
     
     # ============ DATABASE ============
