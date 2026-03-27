@@ -2,13 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './Chat.css';
 
-function Chat({ onStatusUpdate, initialStatus }) {
+function Chat({ onStatusUpdate, initialStatus, apiUrl }) {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const [status, setStatus] = useState(initialStatus);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
+
+    // Use the API URL from props, or fallback to hardcoded
+    const API_URL = apiUrl || 'https://anexa-backend.onrender.com';
 
     useEffect(() => {
         loadHistory();
@@ -21,7 +24,7 @@ function Chat({ onStatusUpdate, initialStatus }) {
 
     const loadHistory = async () => {
         try {
-            const response = await axios.get('/api/history?limit=30');
+            const response = await axios.get(`${API_URL}/api/history?limit=30`);
             const history = response.data.reverse();
             
             const formattedMessages = [];
@@ -61,7 +64,7 @@ function Chat({ onStatusUpdate, initialStatus }) {
         setIsTyping(true);
 
         try {
-            const response = await axios.post('/api/chat', { message: input });
+            const response = await axios.post(`${API_URL}/api/chat`, { message: input });
             
             const anexaMessage = {
                 text: response.data.response,

@@ -6,6 +6,9 @@ import MemoryPanel from './components/MemoryPanel';
 import FeaturesPanel from './components/FeaturesPanel';
 import './App.css';
 
+// Backend URL - hardcoded
+const API_URL = 'https://anexa-backend.onrender.com';
+
 function App() {
     const [status, setStatus] = useState({
         love_score: 50,
@@ -22,13 +25,14 @@ function App() {
     useEffect(() => {
         fetchStatus();
         fetchMemories();
+        
         const interval = setInterval(fetchStatus, 30000);
         return () => clearInterval(interval);
     }, []);
 
     const fetchStatus = async () => {
         try {
-            const response = await axios.get('/api/status');
+            const response = await axios.get(`${API_URL}/api/status`);
             setStatus(response.data);
         } catch (error) {
             console.error('Error fetching status:', error);
@@ -37,7 +41,7 @@ function App() {
 
     const fetchMemories = async () => {
         try {
-            const response = await axios.get('/api/memories');
+            const response = await axios.get(`${API_URL}/api/memories`);
             setMemories(response.data);
         } catch (error) {
             console.error('Error fetching memories:', error);
@@ -71,6 +75,7 @@ function App() {
                     <Chat 
                         onStatusUpdate={updateStatus} 
                         initialStatus={status}
+                        apiUrl={API_URL}
                     />
                 </div>
             </div>
