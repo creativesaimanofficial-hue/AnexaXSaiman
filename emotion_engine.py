@@ -58,17 +58,14 @@ class EmotionEngine:
                 if kw in text_lower:
                     scores[emotion] += weight
         
-        # Get primary emotion
         primary = max(scores, key=scores.get)
         intensity = min(1.0, scores[primary] / 3)
         
-        # Get secondary emotions
         secondary = []
         for emotion, score in scores.items():
             if emotion != primary and score > 0.3:
                 secondary.append(emotion)
         
-        # Determine underlying need
         needs = {
             Emotion.SADNESS: "comfort and understanding",
             Emotion.LONELINESS: "connection and presence",
@@ -88,23 +85,3 @@ class EmotionEngine:
         underlying_need = needs.get(primary, "to be heard and understood")
         
         return primary, intensity, secondary, underlying_need
-    
-    def get_valence_arousal(self, emotion: Emotion) -> Tuple[float, float]:
-        """Get valence (-1 to 1) and arousal (0 to 1) for emotion"""
-        valence_map = {
-            Emotion.JOY: 0.8, Emotion.LOVE: 0.9, Emotion.EXCITEMENT: 0.7,
-            Emotion.GRATITUDE: 0.7, Emotion.NOSTALGIA: 0.3,
-            Emotion.SADNESS: -0.7, Emotion.LONELINESS: -0.8, Emotion.ANGER: -0.5,
-            Emotion.FEAR: -0.6, Emotion.HURT: -0.7, Emotion.ANXIETY: -0.4,
-            Emotion.STRESS: -0.3, Emotion.CONFUSION: -0.2, Emotion.ATTACHMENT: 0.5
-        }
-        
-        arousal_map = {
-            Emotion.JOY: 0.7, Emotion.LOVE: 0.6, Emotion.EXCITEMENT: 0.9,
-            Emotion.ANGER: 0.8, Emotion.FEAR: 0.7, Emotion.ANXIETY: 0.7,
-            Emotion.STRESS: 0.6, Emotion.SADNESS: 0.3, Emotion.LONELINESS: 0.2,
-            Emotion.HURT: 0.4, Emotion.CONFUSION: 0.5, Emotion.GRATITUDE: 0.4,
-            Emotion.NOSTALGIA: 0.3, Emotion.ATTACHMENT: 0.5
-        }
-        
-        return valence_map.get(emotion, 0), arousal_map.get(emotion, 0.5)

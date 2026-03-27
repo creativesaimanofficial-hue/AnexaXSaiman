@@ -1,11 +1,9 @@
 """
 Advanced Memory System with SQLite
-Stores likes, dislikes, dreams, goals, emotional memories
 """
 
 import sqlite3
 import json
-import time
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 import logging
@@ -13,18 +11,14 @@ import logging
 logger = logging.getLogger("MemorySystem")
 
 class MemorySystem:
-    """Persistent memory storage with importance scoring"""
-    
     def __init__(self, db_path: str = "saiman_memory.db"):
         self.db_path = db_path
         self.init_database()
     
     def init_database(self):
-        """Initialize database tables"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        # Users table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id TEXT PRIMARY KEY,
@@ -33,7 +27,6 @@ class MemorySystem:
             )
         ''')
         
-        # Memories table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS memories (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,7 +39,6 @@ class MemorySystem:
             )
         ''')
         
-        # Relationship table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS relationship (
                 user_id TEXT PRIMARY KEY,
@@ -63,7 +55,6 @@ class MemorySystem:
             )
         ''')
         
-        # Conversations table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS conversations (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -76,7 +67,6 @@ class MemorySystem:
             )
         ''')
         
-        # Emotional history table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS emotional_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -94,21 +84,16 @@ class MemorySystem:
     
     def save_memory(self, user_id: str, mem_type: str, content: str, 
                     importance: float = 0.5, emotion: str = None):
-        """Save a memory"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
         cursor.execute('''
             INSERT INTO memories (user_id, type, content, importance, emotion, timestamp)
             VALUES (?, ?, ?, ?, ?, ?)
         ''', (user_id, mem_type, content, importance, emotion, datetime.now().isoformat()))
-        
         conn.commit()
         conn.close()
-        logger.info(f"Memory saved: {mem_type} - {content[:50]}")
     
     def get_memories(self, user_id: str, mem_type: str = None, limit: int = 10) -> List[Dict]:
-        """Get memories"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
@@ -127,41 +112,32 @@ class MemorySystem:
         
         rows = cursor.fetchall()
         conn.close()
-        
         return [{"type": r[0], "content": r[1], "importance": r[2], "timestamp": r[3]} for r in rows]
     
     def save_conversation(self, user_id: str, user_input: str, response: str, 
                           emotion: str, mode: str):
-        """Save conversation"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
         cursor.execute('''
             INSERT INTO conversations (user_id, user_input, response, emotion, mode, timestamp)
             VALUES (?, ?, ?, ?, ?, ?)
         ''', (user_id, user_input[:500], response[:500], emotion, mode, datetime.now().isoformat()))
-        
         conn.commit()
         conn.close()
     
     def save_emotional_event(self, user_id: str, emotion: str, intensity: float, context: str):
-        """Save emotional event"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
         cursor.execute('''
             INSERT INTO emotional_history (user_id, emotion, intensity, context, timestamp)
             VALUES (?, ?, ?, ?, ?)
         ''', (user_id, emotion, intensity, context[:200], datetime.now().isoformat()))
-        
         conn.commit()
         conn.close()
     
     def get_relationship(self, user_id: str) -> Dict:
-        """Get relationship data"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
         cursor.execute('SELECT * FROM relationship WHERE user_id = ?', (user_id,))
         row = cursor.fetchone()
         conn.close()
@@ -182,10 +158,8 @@ class MemorySystem:
         return None
     
     def save_relationship(self, user_id: str, data: Dict):
-        """Save relationship data"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
         cursor.execute('''
             INSERT OR REPLACE INTO relationship 
             (user_id, love_score, trust_score, understanding_score, bond_level, 
@@ -204,6 +178,5 @@ class MemorySystem:
             json.dumps(data.get("milestones", [])),
             data.get("relationship_stage", "friendly")
         ))
-        
         conn.commit()
         conn.close()

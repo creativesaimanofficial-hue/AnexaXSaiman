@@ -9,7 +9,7 @@ class Config:
     
     # ============ GEMINI API (FREE - Latest Model) ============
     GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
-    GEMINI_MODEL = "gemini-3-flash"  # Latest free model
+    GEMINI_MODEL = "gemini-3-flash-preview"  # Latest free model!
     
     # ============ GOOGLE SEARCH ============
     GOOGLE_SEARCH_API_KEY = os.environ.get('GOOGLE_SEARCH_API_KEY', '')

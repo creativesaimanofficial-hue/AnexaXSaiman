@@ -85,7 +85,7 @@ class AnexaCore:
         """Initialize Google Gemini 3 Flash"""
         self.gemini_available = False
         try:
-            self.gemini = GeminiEngine(Config.GEMINI_API_KEY)
+            self.gemini = GeminiEngine(Config.GEMINI_API_KEY, Config.GEMINI_MODEL)
             self.gemini_available = self.gemini.available
             if self.gemini_available:
                 logger.info("✅ Gemini 3 Flash ready")
