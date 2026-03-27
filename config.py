@@ -1,6 +1,5 @@
 """
-ANEXA GF4 - Configuration
-All API Keys from Environment Variables
+ANEXA Configuration - Using Google Gemini 3 Flash
 """
 
 import os
@@ -8,19 +7,17 @@ import os
 class Config:
     """Master configuration for Anexa AI Girlfriend"""
     
-    # ============ OPENAI (ChatGPT) - FROM ENVIRONMENT ============
-    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
-    OPENAI_MODEL = "gpt-4o-mini"  # Free model - works without payment
-    OPENAI_MAX_TOKENS = 500
-    OPENAI_TEMPERATURE = 0.85
+    # ============ GEMINI API (FREE - Latest Model) ============
+    GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+    GEMINI_MODEL = "gemini-3-flash"  # Latest free model
     
-    # ============ GOOGLE SEARCH - FROM ENVIRONMENT ============
+    # ============ GOOGLE SEARCH ============
     GOOGLE_SEARCH_API_KEY = os.environ.get('GOOGLE_SEARCH_API_KEY', '')
     GOOGLE_SEARCH_ENGINE_ID = os.environ.get('GOOGLE_SEARCH_ENGINE_ID', '')
     
-    # ============ ELEVENLABS VOICE - FROM ENVIRONMENT ============
+    # ============ ELEVENLABS VOICE ============
     ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY', '')
-    ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"  # Rachel voice
+    ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
     
     # ============ DATABASE ============
     DATABASE_PATH = "saiman_memory.db"

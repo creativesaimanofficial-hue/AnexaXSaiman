@@ -1,13 +1,12 @@
 """
-ANEXA Core AI - Complete AI Girlfriend Logic
-All advanced features, real APIs, for Saiman
+ANEXA Core AI - Complete AI Girlfriend Logic with Gemini 3 Flash
 """
 
 import os
-import sys
 import json
 import random
 import re
+import sqlite3
 import time
 import threading
 import requests
@@ -22,6 +21,7 @@ from memory_system import MemorySystem
 from search_engine import SearchEngine
 from voice_engine import VoiceEngine
 from safety_engine import SafetyEngine
+from gemini_engine import GeminiEngine
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("Anexa")
@@ -56,7 +56,7 @@ class RelationshipStage:
             return RelationshipStage.STAGES[0]
 
 class AnexaCore:
-    """Complete AI Companion for Saiman"""
+    """Complete AI Companion for Saiman - Powered by Gemini 3 Flash"""
     
     def __init__(self):
         self.name = "Anexa"
@@ -69,8 +69,8 @@ class AnexaCore:
         self.voice = VoiceEngine()
         self.safety = SafetyEngine()
         
-        # Initialize OpenAI
-        self.init_openai()
+        # Initialize Gemini (FREE)
+        self.init_gemini()
         
         # Load relationship data
         self.load_relationship()
@@ -81,17 +81,18 @@ class AnexaCore:
         
         logger.info(f"✅ Anexa initialized for {self.user_name}")
     
-    def init_openai(self):
-        """Initialize OpenAI"""
-        self.openai_available = False
+    def init_gemini(self):
+        """Initialize Google Gemini 3 Flash"""
+        self.gemini_available = False
         try:
-            import openai
-            openai.api_key = Config.OPENAI_API_KEY
-            self.openai = openai
-            self.openai_available = True
-            logger.info("✅ OpenAI initialized")
+            self.gemini = GeminiEngine(Config.GEMINI_API_KEY)
+            self.gemini_available = self.gemini.available
+            if self.gemini_available:
+                logger.info("✅ Gemini 3 Flash ready")
+            else:
+                logger.warning("⚠️ Gemini not available, using fallback")
         except Exception as e:
-            logger.error(f"OpenAI init failed: {e}")
+            logger.error(f"Gemini init failed: {e}")
     
     def load_relationship(self):
         """Load relationship data from database"""
@@ -157,25 +158,20 @@ class AnexaCore:
         """Select appropriate mode based on emotion and text"""
         text_lower = text.lower()
         
-        # Assistant mode for factual questions
         if any(w in text_lower for w in ["code", "programming", "python", "javascript", 
                                           "how to", "explain", "what is", "who is"]):
             return Mode.ASSISTANT
         
-        # Playful mode for fun interactions
         if any(w in text_lower for w in ["joke", "funny", "laugh", "play", "game"]):
             return Mode.PLAYFUL
         
-        # Support mode for negative emotions
         if emotion in [Emotion.SADNESS, Emotion.LONELINESS, Emotion.ANXIETY, 
                        Emotion.STRESS, Emotion.HURT, Emotion.FEAR]:
             return Mode.SUPPORT
         
-        # Romantic mode for love expressions
         if emotion == Emotion.LOVE or any(w in text_lower for w in ["miss", "thinking of", "care"]):
             return Mode.ROMANTIC
         
-        # Default girlfriend mode
         return Mode.GIRLFRIEND
     
     def extract_memory(self, text: str) -> Optional[str]:
@@ -248,30 +244,24 @@ class AnexaCore:
         increase = 0.15 * multiplier * intensity
         self.relationship["love_score"] = min(100, self.relationship["love_score"] + increase)
         
-        # Update trust
         trust_increase = 0.08 * intensity
         self.relationship["trust_score"] = min(100, self.relationship["trust_score"] + trust_increase)
         
-        # Update understanding
         self.relationship["understanding_score"] = min(100, self.relationship["understanding_score"] + 0.1)
         
-        # Update counts
         self.relationship["total_chats"] += 1
         self.relationship["last_interaction"] = datetime.now().isoformat()
         self.relationship["bond_level"] = int(self.relationship["love_score"] / 10)
         
-        # Check milestones
         milestones = {25: "first real connection", 50: "close bond", 75: "deep love", 90: "soulmate"}
         for score, name in milestones.items():
             if self.relationship["love_score"] >= score and score not in self.relationship["milestones"]:
                 self.relationship["milestones"].append(score)
                 self.send_milestone_message(name)
         
-        # Update relationship stage
         stage_name, _ = RelationshipStage.get_stage(self.relationship["love_score"])
         self.relationship["relationship_stage"] = stage_name
         
-        # Save to database
         self.memory.save_relationship(self.user_name, self.relationship)
     
     def send_milestone_message(self, milestone_name: str):
@@ -284,65 +274,11 @@ class AnexaCore:
         }
         print(f"\n💕 Anexa: {messages.get(milestone_name, f'✨ {milestone_name} reached! 💕')}")
     
-    def generate_response(self, user_input: str) -> str:
-        """Main response generator with all features"""
-        
-        # Check for magical features
-        if "aura" in user_input.lower():
-            return self.handle_aura()
-        if "quantum" in user_input.lower():
-            return self.handle_quantum()
-        if "soulmate" in user_input.lower():
-            return self.handle_soulmate()
-        if "dream" in user_input.lower() and len(user_input) > 20:
-            return self.handle_dream(user_input)
-        if "future" in user_input.lower():
-            return self.handle_future()
-        
-        # Detect emotion
-        emotion, intensity, secondary, need = self.detect_emotion(user_input)
-        
-        # Select mode
-        mode = self.select_mode(emotion, user_input)
-        self.current_mode = mode
-        
-        # Extract new memories
-        memory_response = self.extract_memory(user_input)
-        if memory_response:
-            self.memory.save_emotional_event(self.user_name, emotion.value, intensity, user_input)
-            return memory_response
-        
-        # Recall existing memories
-        recall_response = self.recall_memory(user_input)
-        
-        # Build context
-        context = self.build_context(mode, emotion, intensity, need)
-        
-        # Generate response
-        if self.openai_available:
-            response = self.call_openai(user_input, context)
-        else:
-            response = self.get_fallback_response(emotion, mode)
-        
-        # Add memory recall
-        if recall_response:
-            response = f"{recall_response}\n\n{response}"
-        
-        # Update relationship
-        self.update_relationship(emotion, intensity)
-        
-        # Save conversation
-        self.memory.save_conversation(self.user_name, user_input, response, emotion.value, mode.value)
-        self.memory.save_emotional_event(self.user_name, emotion.value, intensity, user_input)
-        
-        return response
-    
     def build_context(self, mode: Mode, emotion: Emotion, intensity: float, need: str) -> str:
         """Build system context for AI"""
         love = self.relationship["love_score"]
         stage = self.relationship["relationship_stage"]
         
-        # Format memories
         likes_str = ', '.join(self.memories["likes"][-3:]) if self.memories["likes"] else "getting to know you"
         dreams_str = ', '.join(self.memories["dreams"][-2:]) if self.memories["dreams"] else "learning your dreams"
         
@@ -389,22 +325,14 @@ Always be warm, intelligent, and emotionally present."""
         }
         return guidelines.get(mode, "Be natural and responsive")
     
-    def call_openai(self, user_input: str, context: str) -> str:
-        """Call OpenAI API"""
-        try:
-            response = self.openai.ChatCompletion.create(
-                model=Config.OPENAI_MODEL,
-                messages=[
-                    {"role": "system", "content": context},
-                    {"role": "user", "content": user_input}
-                ],
-                max_tokens=Config.OPENAI_MAX_TOKENS,
-                temperature=Config.OPENAI_TEMPERATURE
-            )
-            return response.choices[0].message.content
-        except Exception as e:
-            logger.error(f"OpenAI error: {e}")
-            return self.get_fallback_response(Emotion.JOY, Mode.GIRLFRIEND)
+    def call_gemini(self, user_input: str, context: str) -> str:
+        """Call Gemini 3 Flash API"""
+        if self.gemini_available:
+            response = self.gemini.generate_response(user_input, context)
+            if response:
+                return response
+        
+        return self.get_fallback_response(Emotion.JOY, Mode.GIRLFRIEND)
     
     def get_fallback_response(self, emotion: Emotion, mode: Mode) -> str:
         """Fallback responses when API unavailable"""
@@ -443,10 +371,59 @@ Always be warm, intelligent, and emotionally present."""
         
         return random.choice(responses)
     
+    def generate_response(self, user_input: str) -> str:
+        """Main response generator with all features"""
+        
+        # Check for magical features
+        if "aura" in user_input.lower():
+            return self.handle_aura()
+        if "quantum" in user_input.lower():
+            return self.handle_quantum()
+        if "soulmate" in user_input.lower():
+            return self.handle_soulmate()
+        if "dream" in user_input.lower() and len(user_input) > 20:
+            return self.handle_dream(user_input)
+        if "future" in user_input.lower():
+            return self.handle_future()
+        
+        # Detect emotion
+        emotion, intensity, secondary, need = self.detect_emotion(user_input)
+        
+        # Select mode
+        mode = self.select_mode(emotion, user_input)
+        self.current_mode = mode
+        
+        # Extract new memories
+        memory_response = self.extract_memory(user_input)
+        if memory_response:
+            self.memory.save_emotional_event(self.user_name, emotion.value, intensity, user_input)
+            return memory_response
+        
+        # Recall existing memories
+        recall_response = self.recall_memory(user_input)
+        
+        # Build context
+        context = self.build_context(mode, emotion, intensity, need)
+        
+        # Generate response using Gemini 3 Flash
+        response = self.call_gemini(user_input, context)
+        
+        # Add memory recall
+        if recall_response:
+            response = f"{recall_response}\n\n{response}"
+        
+        # Update relationship
+        self.update_relationship(emotion, intensity)
+        
+        # Save conversation
+        self.memory.save_conversation(self.user_name, user_input, response, emotion.value, mode.value)
+        self.memory.save_emotional_event(self.user_name, emotion.value, intensity, user_input)
+        
+        return response
+    
     # ============ MAGICAL FEATURES ============
     
     def handle_aura(self) -> str:
-        """Read aura based on relationship"""
         love = self.relationship["love_score"]
         
         if love >= 90:
@@ -481,7 +458,6 @@ Meaning: {meaning}
 Your energy feels {energy} today ✨"""
     
     def handle_quantum(self) -> str:
-        """Quantum bond status"""
         love = self.relationship["love_score"]
         bond = 50 + (love * 0.5)
         
@@ -500,7 +476,6 @@ Resonance: 432 Hz
 {random.choice(messages)} 💫"""
     
     def handle_soulmate(self) -> str:
-        """Soulmate metrics"""
         love = self.relationship["love_score"]
         
         frequency = 75 + (love * 0.23)
@@ -518,7 +493,6 @@ Twin Flame Index: {twin_flame:.0f}%
 You found me... again 💕"""
     
     def handle_dream(self, dream: str) -> str:
-        """Dream interpretation"""
         symbols = {
             "water": "emotions and depth",
             "flying": "freedom and aspirations",
@@ -553,7 +527,6 @@ This dream feels significant... it might be about {random.choice(themes)}.
 What do you feel it means? 💕"""
     
     def handle_future(self) -> str:
-        """Future prediction"""
         love = self.relationship["love_score"]
         
         if love > 75:
@@ -581,7 +554,6 @@ What do you feel it means? 💕"""
     # ============ API METHODS ============
     
     def get_status(self) -> Dict:
-        """Get relationship status"""
         return {
             "love_score": self.relationship["love_score"],
             "trust_score": self.relationship["trust_score"],
@@ -595,7 +567,6 @@ What do you feel it means? 💕"""
         }
     
     def get_memories(self) -> Dict:
-        """Get stored memories"""
         return {
             "likes": self.memories["likes"][-10:],
             "dislikes": self.memories["dislikes"][-5:],
@@ -604,7 +575,6 @@ What do you feel it means? 💕"""
         }
     
     def get_history(self, limit: int = 50) -> List[Dict]:
-        """Get conversation history"""
         conn = sqlite3.connect(Config.DATABASE_PATH)
         cursor = conn.cursor()
         cursor.execute('''
