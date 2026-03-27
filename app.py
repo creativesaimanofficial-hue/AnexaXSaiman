@@ -1,5 +1,5 @@
 """
-ANEXA Flask API Server - Powered by Gemini 3 Flash
+ANEXA Flask API Server - Powered by DeepSeek
 """
 
 from flask import Flask, request, jsonify, send_from_directory
@@ -96,7 +96,7 @@ if __name__ == '__main__':
     print("""
 ╔══════════════════════════════════════════════════════════════╗
 ║                    🔥 ANEXA BACKEND SERVER 🔥                ║
-║                  Powered by Gemini 3 Flash                   ║
+║                  Powered by DeepSeek (FREE!)                 ║
 ║                    http://localhost:5000                     ║
 ╚══════════════════════════════════════════════════════════════╝
     """)

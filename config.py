@@ -1,5 +1,5 @@
 """
-ANEXA Configuration - Using Google Gemini 1.5 Flash
+ANEXA Configuration - Using DeepSeek API (FREE!)
 """
 
 import os
@@ -7,9 +7,8 @@ import os
 class Config:
     """Master configuration for Anexa AI Girlfriend"""
     
-    # ============ GEMINI API (FREE - Fresh Quota) ============
-    GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
-    GEMINI_MODEL = "gemini-1.5-flash"  # Different quota pool - fresh daily limit!
+    # ============ DEEPSEEK API (FREE) ============
+    DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY', '')
     
     # ============ GOOGLE SEARCH ============
     GOOGLE_SEARCH_API_KEY = os.environ.get('GOOGLE_SEARCH_API_KEY', '')

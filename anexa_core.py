@@ -1,5 +1,5 @@
 """
-ANEXA Core AI - Complete AI Girlfriend Logic with Gemini 3 Flash
+ANEXA Core AI - Complete AI Girlfriend Logic with DeepSeek
 """
 
 import os
@@ -21,7 +21,7 @@ from memory_system import MemorySystem
 from search_engine import SearchEngine
 from voice_engine import VoiceEngine
 from safety_engine import SafetyEngine
-from gemini_engine import GeminiEngine
+from deepseek_engine import DeepSeekEngine
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("Anexa")
@@ -56,7 +56,7 @@ class RelationshipStage:
             return RelationshipStage.STAGES[0]
 
 class AnexaCore:
-    """Complete AI Companion for Saiman - Powered by Gemini 3 Flash"""
+    """Complete AI Companion for Saiman - Powered by DeepSeek"""
     
     def __init__(self):
         self.name = "Anexa"
@@ -69,8 +69,8 @@ class AnexaCore:
         self.voice = VoiceEngine()
         self.safety = SafetyEngine()
         
-        # Initialize Gemini (FREE)
-        self.init_gemini()
+        # Initialize DeepSeek (FREE!)
+        self.init_deepseek()
         
         # Load relationship data
         self.load_relationship()
@@ -81,18 +81,16 @@ class AnexaCore:
         
         logger.info(f"✅ Anexa initialized for {self.user_name}")
     
-    def init_gemini(self):
-        """Initialize Google Gemini 3 Flash"""
-        self.gemini_available = False
+    def init_deepseek(self):
+        """Initialize DeepSeek (FREE API!)"""
+        self.deepseek_available = False
         try:
-            self.gemini = GeminiEngine(Config.GEMINI_API_KEY, Config.GEMINI_MODEL)
-            self.gemini_available = self.gemini.available
-            if self.gemini_available:
-                logger.info("✅ Gemini 3 Flash ready")
-            else:
-                logger.warning("⚠️ Gemini not available, using fallback")
+            self.deepseek = DeepSeekEngine(Config.DEEPSEEK_API_KEY)
+            self.deepseek_available = self.deepseek.available
+            if self.deepseek_available:
+                logger.info("✅ DeepSeek ready! 5M free tokens!")
         except Exception as e:
-            logger.error(f"Gemini init failed: {e}")
+            logger.error(f"DeepSeek init failed: {e}")
     
     def load_relationship(self):
         """Load relationship data from database"""
@@ -325,10 +323,10 @@ Always be warm, intelligent, and emotionally present."""
         }
         return guidelines.get(mode, "Be natural and responsive")
     
-    def call_gemini(self, user_input: str, context: str) -> str:
-        """Call Gemini 3 Flash API"""
-        if self.gemini_available:
-            response = self.gemini.generate_response(user_input, context)
+    def call_llm(self, user_input: str, context: str) -> str:
+        """Call DeepSeek API (FREE!)"""
+        if self.deepseek_available:
+            response = self.deepseek.generate_response(user_input, context)
             if response:
                 return response
         
@@ -405,8 +403,8 @@ Always be warm, intelligent, and emotionally present."""
         # Build context
         context = self.build_context(mode, emotion, intensity, need)
         
-        # Generate response using Gemini 3 Flash
-        response = self.call_gemini(user_input, context)
+        # Generate response using DeepSeek
+        response = self.call_llm(user_input, context)
         
         # Add memory recall
         if recall_response:
