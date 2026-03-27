@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Chat from './components/Chat';
-import StatusCard from './components/StatusCard';
-import MemoryPanel from './components/MemoryPanel';
-import FeaturesPanel from './components/FeaturesPanel';
+import Chat from './Chat';           // Changed from './components/Chat'
+import StatusCard from './StatusCard'; // Changed from './components/StatusCard'
+import MemoryPanel from './MemoryPanel'; // Changed from './components/MemoryPanel'
+import FeaturesPanel from './FeaturesPanel'; // Changed from './components/FeaturesPanel'
 import './App.css';
 
 function App() {

@@ -2,8 +2,8 @@ services:
   - type: web
     name: anexa-backend
     runtime: python
-    buildCommand: cd backend && pip install -r requirements.txt
-    startCommand: cd backend && gunicorn app:app
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
     envVars:
       - key: OPENAI_API_KEY
         sync: false
@@ -17,8 +17,8 @@ services:
 
   - type: static
     name: anexa-frontend
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/build
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
     routes:
       - type: rewrite
         source: /*
