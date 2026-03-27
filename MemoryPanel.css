@@ -1,0 +1,48 @@
+.memory-panel {
+    background: rgba(26, 26, 58, 0.95);
+    border-radius: 20px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.memory-panel h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.memory-section {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.memory-icon {
+    font-size: 20px;
+}
+
+.memory-content {
+    flex: 1;
+}
+
+.memory-item {
+    font-size: 13px;
+    margin-bottom: 5px;
+    opacity: 0.9;
+}
+
+.empty-memory {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.6;
+    padding: 20px;
+}
+
+.loading {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.6;
+    padding: 20px;
+}

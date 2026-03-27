@@ -1,0 +1,113 @@
+.status-card {
+    background: rgba(26, 26, 58, 0.95);
+    border-radius: 20px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.status-card h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.metric {
+    margin-bottom: 15px;
+}
+
+.metric-label {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-bottom: 5px;
+}
+
+.metric-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.metric-fill {
+    height: 100%;
+    background: #FF1493;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.metric-value {
+    font-size: 12px;
+    text-align: right;
+    margin-top: 5px;
+    opacity: 0.7;
+}
+
+.stage-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.stage-emoji {
+    font-size: 24px;
+}
+
+.stage-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 10px;
+    opacity: 0.6;
+}
+
+.milestones {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.milestones-title {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.milestones-list {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.milestone {
+    font-size: 10px;
+    background: rgba(255, 20, 147, 0.2);
+    padding: 3px 8px;
+    border-radius: 12px;
+}
